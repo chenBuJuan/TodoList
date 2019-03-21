@@ -45,24 +45,43 @@ const Input = styled.input`
   }
 `;
 
-const Head = ({ addTodo }) => (
-  <Header>
-    <HWrapper>
-      <H1>Todolist</H1>
-    </HWrapper>
-    <InputWrapper>
-      <Input
-        type="text"
-        autoFocus="autoFocus"
-        placeholder="input things"
-        onKeyUp={addTodo}
-      />
-    </InputWrapper>
-  </Header>
-);
+const Head = ({ todos, addTodo }) => {
+  let input;
+
+  const handleKeyUp = (e) => {
+    if (e.key !== 'Enter') return;
+    let re = true;
+    const txt = input.value;
+    for (const todo of todos) if (todo.txt === txt) re = false;
+    if (re) {
+      addTodo(txt);
+      input.value = '';
+    }
+  };
+
+  return (
+    <Header>
+      <HWrapper>
+        <H1>Todolist</H1>
+      </HWrapper>
+      <InputWrapper>
+        <Input
+          ref={(node) => {
+            input = node;
+          }}
+          type="text"
+          autoFocus="autoFocus"
+          placeholder="input things"
+          onKeyUp={handleKeyUp}
+        />
+      </InputWrapper>
+    </Header>
+  );
+};
 
 
 Head.propTypes = {
+  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
   addTodo: PropTypes.func.isRequired,
 };
 
